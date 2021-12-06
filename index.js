@@ -32,6 +32,13 @@ app.get('/api/persons', (request, response) => {
   response.json(phonebook).end()
 })
 
+app.get('/api/persons/:id', (req, res, next) => {
+  const id = Number(req.params.id)
+  const person = phonebook.find((person) => person.id === id)
+  if (person) res.json(person).end()
+  else next()
+})
+
 app.get('/info', (req, res) => {
   const ammount = phonebook.length
   const date = new Date()
@@ -39,11 +46,11 @@ app.get('/info', (req, res) => {
   res.send(data).end()
 })
 
-// app.use((request, response) => {
-//   response.status(404).json({
-//     error: 'Not found'
-//   })
-// })
+app.use((request, response) => {
+  response.status(404).json({
+    error: 'Not found'
+  })
+})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
