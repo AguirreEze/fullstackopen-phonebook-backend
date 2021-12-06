@@ -28,8 +28,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/api/persons', (request, response) => {
-  response.json(phonebook).end()
+app.get('/api/persons', (req, res) => {
+  res.json(phonebook).end()
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -37,6 +37,17 @@ app.get('/api/persons/:id', (req, res, next) => {
   const person = phonebook.find((person) => person.id === id)
   if (person) res.json(person).end()
   else next()
+})
+
+app.post('/api/persons', (req, res) => {
+  const data = req.body
+  const newPerson = {
+    id: Math.max(...phonebook.map(pers => pers.id)) + 1,
+    name: data.name,
+    number: data.number
+  }
+  phonebook = [...phonebook, newPerson]
+  res.json(newPerson).end()
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
