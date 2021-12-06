@@ -32,6 +32,13 @@ app.get('/api/persons', (request, response) => {
   response.json(phonebook).end()
 })
 
+app.get('/info', (req, res) => {
+  const ammount = phonebook.length
+  const date = new Date()
+  const data = `<p>Phonebook has info for ${ammount} people</p> <p>${date}</p>`
+  res.send(data).end()
+})
+
 // app.use((request, response) => {
 //   response.status(404).json({
 //     error: 'Not found'
