@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 
-const phonebook = [
+let phonebook = [
   {
     id: 1,
     name: 'Arto Hellas',
@@ -37,6 +37,15 @@ app.get('/api/persons/:id', (req, res, next) => {
   const person = phonebook.find((person) => person.id === id)
   if (person) res.json(person).end()
   else next()
+})
+
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = Number(req.params.id)
+  const person = phonebook.find((person) => person.id === id)
+  if (person) {
+    phonebook = phonebook.filter((person) => person.id !== id)
+    res.json(person).end()
+  } else next()
 })
 
 app.get('/info', (req, res) => {
