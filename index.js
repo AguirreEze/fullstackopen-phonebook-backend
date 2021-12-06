@@ -41,6 +41,9 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons', (req, res) => {
   const data = req.body
+  if (data.name === '') res.json({ error: 'Name missing' }).end()
+  if (data.number === '') res.json({ error: 'Number missing' }).end()
+  if (phonebook.find(person => person.name === data.name)) res.json({ error: 'Name must be unique' }).end()
   const newPerson = {
     id: Math.max(...phonebook.map(pers => pers.id)) + 1,
     name: data.name,
@@ -66,8 +69,8 @@ app.get('/info', (req, res) => {
   res.send(data).end()
 })
 
-app.use((request, response) => {
-  response.status(404).json({
+app.use((req, res) => {
+  res.status(404).json({
     error: 'Not found'
   })
 })
