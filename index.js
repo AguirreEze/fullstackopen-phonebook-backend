@@ -28,6 +28,7 @@ let phonebook = [
 const app = express()
 app.use(morgan('tiny'))
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 
 app.get('/api/persons', (req, res) => {
