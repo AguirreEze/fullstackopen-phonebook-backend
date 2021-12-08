@@ -31,28 +31,28 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/api/persons', (req, res) => {
-  res.json(phonebook).end()
+  return res.json(phonebook).end()
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
   const id = Number(req.params.id)
   const person = phonebook.find((person) => person.id === id)
-  if (person) res.json(person).end()
-  else next()
+  if (person) return res.json(person).end()
+  else return next()
 })
 
 app.post('/api/persons', (req, res) => {
   const data = req.body
-  if (data.name === '') res.json({ error: 'Name missing' }).end()
-  if (data.number === '') res.json({ error: 'Number missing' }).end()
-  if (phonebook.find(person => person.name === data.name)) res.json({ error: 'Name must be unique' }).end()
+  if (data.name === '') return res.json({ error: 'Name missing' }).end()
+  if (data.number === '') return res.json({ error: 'Number missing' }).end()
+  if (phonebook.find(person => person.name === data.name)) return res.json({ error: 'Name must be unique' }).end()
   const newPerson = {
     id: Math.max(...phonebook.map(pers => pers.id)) + 1,
     name: data.name,
     number: data.number
   }
   phonebook = [...phonebook, newPerson]
-  res.json(newPerson).end()
+  return res.json(newPerson).end()
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -60,19 +60,19 @@ app.delete('/api/persons/:id', (req, res, next) => {
   const person = phonebook.find((person) => person.id === id)
   if (person) {
     phonebook = phonebook.filter((person) => person.id !== id)
-    res.json(person).end()
-  } else next()
+    return res.json(person).end()
+  } else return next()
 })
 
 app.get('/info', (req, res) => {
   const ammount = phonebook.length
   const date = new Date()
   const data = `<p>Phonebook has info for ${ammount} people</p> <p>${date}</p>`
-  res.send(data).end()
+  return res.send(data).end()
 })
 
 app.use((req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     error: 'Not found'
   })
 })
