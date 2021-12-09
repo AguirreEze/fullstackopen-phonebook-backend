@@ -26,21 +26,18 @@ app.get('/api/persons/:id', async (req, res) => {
   }
 })
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const { name, phone } = req.body
 
-  if (name === '') return res.json({ error: 'Name missing' }).end()
-  if (phone === '') return res.json({ error: 'Phone missing' }).end()
+  // if (name === '') return res.json({ error: 'Name missing' }).end()
+  // if (phone === '') return res.json({ error: 'Phone missing' }).end()
   const newPerson = new Person({
     name,
     phone
   })
-  const isOnList = await Person.findOne({ name })
-
-  isOnList
-    ? await Person.findOneAndUpdate({ name: `${name}` }, { phone })
-    : await newPerson.save()
-  res.status(201).json(newPerson)
+  newPerson.save()
+    .then(savedNote => res.status(201).json(savedNote.toJSON()))
+    .catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', async (req, res) => {
@@ -65,6 +62,12 @@ app.use((req, res) => {
   return res.status(404).json({
     error: 'Not found'
   })
+})
+app.use((error, request, response, next) => {
+  console.log(error)
+  if (error.name === 'CastError') response.status(400).send({ error: 'data used is Malformed' })
+  else if (error.name === 'ValidationError') response.status(400).send({ error: error.message })
+  else response.status(500).end()
 })
 
 const PORT = process.env.PORT || 3001
