@@ -5,29 +5,6 @@ const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/Person')
 
-const phonebook = [
-  // {
-  //   id: 1,
-  //   name: 'Arto Hellas',
-  //   number: '040-123456'
-  // },
-  // {
-  //   id: 2,
-  //   name: 'Ada Lovelace',
-  //   number: '39-44-5323523'
-  // },
-  // {
-  //   id: 3,
-  //   name: 'Dan Abramov',
-  //   number: '12-43-234345'
-  // },
-  // {
-  //   id: 4,
-  //   name: 'Mary Poppendieck',
-  //   number: '39-23-6423122'
-  // }
-]
-
 const app = express()
 app.use(morgan('tiny'))
 app.use(cors())
@@ -54,16 +31,15 @@ app.post('/api/persons', async (req, res) => {
 
   if (name === '') return res.json({ error: 'Name missing' }).end()
   if (phone === '') return res.json({ error: 'Phone missing' }).end()
-
-  // const isOnList = await Person.findOne({ name: `${name}` })
-
-  // if (isOnList) return res.json({ error: 'Name must be unique' }).end()
-
   const newPerson = new Person({
     name,
     phone
   })
-  await newPerson.save()
+  const isOnList = await Person.findOne({ name })
+
+  isOnList
+    ? await Person.findOneAndUpdate({ name: `${name}` }, { phone })
+    : await newPerson.save()
   res.status(201).json(newPerson)
 })
 
