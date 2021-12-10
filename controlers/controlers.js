@@ -11,7 +11,7 @@ const getPersonById = async (req, res) => {
     const person = await Person.findById(id)
     return res.json(person).end()
   } catch {
-    return res.json({ error: 'person not found' }).status(400)
+    return res.json({ error: 'person not found' }).status(400).end()
   }
 }
 
@@ -23,7 +23,7 @@ const addNewPerson = (req, res, next) => {
     phone
   })
   newPerson.save()
-    .then(savedNote => res.status(201).json(savedNote.toJSON()))
+    .then(savedNote => res.status(201).json(savedNote.toJSON()).end())
     .catch(err => next(err))
 }
 

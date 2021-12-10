@@ -6,9 +6,9 @@ const unknownEndpoint = (req, res) => {
 
 const errorHandler = (error, request, response, next) => {
   console.log(error)
-  if (error.name === 'CastError') response.status(400).send({ error: 'data used is Malformed' })
-  else if (error.name === 'ValidationError') response.status(400).send({ error: error.message })
-  else response.status(500).end()
+  if (error.name === 'CastError') return response.status(400).send({ error: 'data used is Malformed' }).end()
+  if (error.name === 'ValidationError') return response.status(400).send({ error: error.message }).end()
+  return response.status(500).end()
 }
 
 module.exports = { unknownEndpoint, errorHandler }
